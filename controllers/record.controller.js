@@ -3,8 +3,14 @@ const cloudinary = require('../config/cloudinary');
 const removeFile = require('../utils/fileRemover'); // Import the helper
 
 exports.createRecord = async (req, res) => {
-  const { title, body } = req.body;
-  const localFile = req.file; // This comes from Multer
+  // 1. Get userId from request body
+  const { title, body, userId } = req.body; 
+  const localFile = req.file;
+
+  // Safety Check
+  if (!userId) {
+    return res.status(400).json({ success: false, message: "User ID is required" });
+  }
 
   let fileUrl = null;
   let cloudinaryId = null;
@@ -32,6 +38,7 @@ exports.createRecord = async (req, res) => {
 
     // 3. Create the Database Record
     const newRecord = new Record({
+      userId, // <--- SAVE THE USER ID HERE
       title,
       body,
       fileUrl,
@@ -66,6 +73,11 @@ exports.createRecord = async (req, res) => {
 
 exports.getAllRecords = async (req, res) => {
   try {
+    // 2. Get userId from Query Parameters (e.g. ?userId=123)
+    const { userId } = req.query;
+    // Only find records that match this specific userId
+    const query = userId ? { userId: userId } : {};
+    
     const records = await Record.find().sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: records });
   } catch (error) {

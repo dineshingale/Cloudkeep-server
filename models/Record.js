@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 
 const RecordSchema = new mongoose.Schema({
+
+  // --- ADD THIS NEW FIELD ---
+  userId: {
+    type: String,
+    required: true, // Every record MUST belong to someone
+    index: true     // Helps search faster
+  },
+  // --------------------------
   title: {
     type: String,
     required: false, // Title is optional
