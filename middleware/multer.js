@@ -1,28 +1,21 @@
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
-
-// Ensure the temporary upload directory exists
-const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
+const os = require('os'); // Import OS module
 
 // 1. Storage Configuration
-// We save files locally first. This is safer for large video files than storing them in RAM.
+// Use the system's temporary directory (works on Render/Vercel/Heroku)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadDir); 
+    // os.tmpdir() gets the safe temporary folder for the OS
+    cb(null, os.tmpdir()); 
   },
   filename: (req, file, cb) => {
-    // Naming: timestamp-originalName (prevents overwriting)
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, uniqueSuffix + path.extname(file.originalname));
   }
 });
 
 // 2. File Filter (Security)
-// Only accept specific multimedia types
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif|mp4|mp3|wav|mkv/;
   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
@@ -38,7 +31,7 @@ const fileFilter = (req, file, cb) => {
 // 3. Initialize Multer
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // Limit file size to 100MB (Adjust as needed)
+  limits: { fileSize: 100 * 1024 * 1024 }, 
   fileFilter: fileFilter
 });
 
