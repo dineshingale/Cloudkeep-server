@@ -8,7 +8,13 @@ const RecordSchema = new mongoose.Schema({
     required: true, // Every record MUST belong to someone
     index: true     // Helps search faster
   },
-  // --------------------------
+  // --- ADDED FOR AI SEARCH ---
+  embedding: {
+    type: [Number],
+    required: false,
+    select: false, // Do not return this huge array by default
+  },
+  // ---------------------------
   title: {
     type: String,
     required: false, // Title is optional
