@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import upload from '../middleware/multer';
+import * as recordController from '../controllers/record.controller';
+
 const router = express.Router();
-const upload = require('../middleware/multer');
-const recordController = require('../controllers/record.controller');
 
 // POST /api/records/
 router.post('/', upload.single('file'), recordController.createRecord);
@@ -18,4 +19,4 @@ router.get('/search-ai', recordController.searchAI);
 // PUT /api/records/:id (For updates)
 router.put('/:id', recordController.updateRecord);
 
-module.exports = router;
+export default router;
