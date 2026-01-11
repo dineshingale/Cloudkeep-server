@@ -1,7 +1,7 @@
-const { pipeline } = require('@xenova/transformers');
+import { pipeline, Pipeline } from '@xenova/transformers';
 
 // Cache the model instance to avoid reloading it on every request
-let extractor = null;
+let extractor: any = null;
 
 /**
  * Generates a vector embedding for the given text.
@@ -10,7 +10,7 @@ let extractor = null;
  * @param {string} text - The text to vectorize.
  * @returns {Promise<number[]>} - The embedding vector as an array of numbers.
  */
-async function generateEmbedding(text) {
+async function generateEmbedding(text: string): Promise<number[] | null> {
     if (!text || typeof text !== 'string' || text.trim().length === 0) {
         return null;
     }
@@ -30,11 +30,11 @@ async function generateEmbedding(text) {
         // The output is a Tensor, we need to convert it to a regular array
         const embedding = Array.from(output.data);
 
-        return embedding;
+        return embedding as number[];
     } catch (error) {
         console.error('Error generating embedding:', error);
         throw error;
     }
 }
 
-module.exports = { generateEmbedding };
+export { generateEmbedding };
