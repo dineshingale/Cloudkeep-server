@@ -2,7 +2,7 @@
   "name": "cloudkeep-server",
   "version": "1.0.0",
   "description": "Backend for CloudKeep application",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon server.ts",
